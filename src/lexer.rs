@@ -5,6 +5,7 @@ const LINE_FEED: &str = "\n";
 const START: &str = "(";
 const END: &str = ")";
 const STRING_QUOTE: &str = "\"";
+const DECIMAL_POINT: &str = ".";
 
 pub enum Token {
     Start {
@@ -68,7 +69,9 @@ impl<'a> Lexer<'a> {
     }
 
     pub fn next(&mut self) -> Result<Token, LexerError> {
-        while self.input.len() > 0 {
+        let mut has_num_check_failed: bool = false;
+
+        'lexer_loop: while self.input.len() > 0 {
             match &self.input[0..1] {
                 CARRIAGE_RETURN => {
                     while &self.input[0..1] == CARRIAGE_RETURN {
@@ -123,6 +126,40 @@ impl<'a> Lexer<'a> {
                         line: self.line,
                         col: self.col,
                     });
+                }
+                number
+                    if (number.as_bytes()[0].is_ascii_digit()
+                        || &number[0..1] == DECIMAL_POINT)
+                        && !has_num_check_failed =>
+                {
+                    let mut has_decimal_point = false;
+                    let mut i = 0;
+                    while i < self.input.len() {
+                        match &self.input[i..i + 1] {
+                            y if y.as_bytes()[0].is_ascii_digit() => {}
+                            DECIMAL_POINT => {
+                                if has_decimal_point {
+                                    has_num_check_failed = true;
+                                    continue 'lexer_loop;
+                                } else {
+                                    has_decimal_point = true;
+                                }
+                            }
+                            WHITESPACE | LINE_FEED | CARRIAGE_RETURN | START | END => break,
+                            _ => {
+                                has_num_check_failed = true;
+                                continue 'lexer_loop;
+                            }
+                        }
+                        i += 1;
+                    }
+                    let token = Token::Number {
+                        token: self.input[0..i].to_owned(),
+                        line: self.line,
+                        col: self.col,
+                    };
+                    self.advance_column(i);
+                    return Ok(token);
                 }
                 _ => {}
             }
