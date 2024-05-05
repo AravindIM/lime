@@ -161,7 +161,23 @@ impl<'a> Lexer<'a> {
                     self.advance_column(i);
                     return Ok(token);
                 }
-                _ => {}
+                _ => {
+                    let mut i = 0;
+                    while i < self.input.len() {
+                        match &self.input[i..i + 1] {
+                            WHITESPACE | LINE_FEED | CARRIAGE_RETURN | START | END => break,
+                            _ => {}
+                        }
+                        i += 1;
+                    }
+                    let token = Token::Symbol {
+                        token: self.input[0..i].to_owned(),
+                        line: self.line,
+                        col: self.col,
+                    };
+                    self.advance_column(i);
+                    return Ok(token);
+                }
             }
         }
         return Err(LexerError::NoTokenFound);
