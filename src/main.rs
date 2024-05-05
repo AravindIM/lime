@@ -30,8 +30,8 @@ fn main() -> Result<()> {
                                 println!("Symbol({}, line: {}, col: {})", token, line, col)
                             }
                         },
-                        Err(lime::lexer::LexerError::UnclosedString { .. }) => {
-                            println!("Error:Missing quote");
+                        Err(lime::lexer::LexerError::UnclosedString { line, col }) => {
+                            println!("ERROR:{}:{}: Missing quote", line, col);
                             break;
                         }
                         Err(lime::lexer::LexerError::NoTokenFound) => break,
