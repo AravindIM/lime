@@ -38,4 +38,19 @@ impl<'a> Lexer<'a> {
             col: 1,
         }
     }
+
+    fn skip(&mut self, delta: usize) {
+        self.input = &self.input[delta..];
+    }
+
+    fn advance_column(&mut self, delta: usize) {
+        self.col += delta;
+        self.skip(delta);
+    }
+
+    fn advance_line(&mut self, delta: usize) {
+        self.col = 0;
+        self.line += delta;
+        self.skip(delta);
+    }
 }
