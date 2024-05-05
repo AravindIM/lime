@@ -24,6 +24,11 @@ pub enum Token {
     },
 }
 
+pub enum LexerError {
+    NoTokenFound,
+    UnclosedString { line: usize, col: usize },
+}
+
 pub struct Lexer<'a> {
     input: &'a str,
     line: usize,
