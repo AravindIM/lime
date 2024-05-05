@@ -115,7 +115,7 @@ impl<'a> Lexer<'a> {
                     // Loop to capture the entire string
                     for i in 1..self.input.len() {
                         // Checking for ending quote
-                        if &self.input[i..i + 1] == STRING_QUOTE {
+                        if &self.input[i..i + 1] == STRING_QUOTE && &self.input[i - 1..i] != "\\" {
                             // Save token before clearing it
                             let token = Token::String {
                                 token: self.input[1..i].to_owned(), // Skip the first quote character
