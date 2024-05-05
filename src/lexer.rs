@@ -1,4 +1,7 @@
 const CARRIAGE_RETURN: &str = "\r";
+const WHITESPACE: &str = " ";
+const TAB: &str = "\t";
+
 pub enum Token {
     Start {
         line: usize,
@@ -66,6 +69,11 @@ impl<'a> Lexer<'a> {
                 CARRIAGE_RETURN => {
                     while &self.input[0..1] == CARRIAGE_RETURN {
                         self.skip(1);
+                    }
+                }
+                WHITESPACE | TAB => {
+                    while &self.input[0..1] == WHITESPACE || &self.input[0..1] == TAB {
+                        self.advance_column(1);
                     }
                 }
                 _ => {}
