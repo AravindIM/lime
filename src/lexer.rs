@@ -23,3 +23,19 @@ pub enum Token {
         col: usize,
     },
 }
+
+pub struct Lexer<'a> {
+    input: &'a str,
+    line: usize,
+    col: usize,
+}
+
+impl<'a> Lexer<'a> {
+    pub fn new(input: &'a str) -> Self {
+        Lexer {
+            input,
+            line: 1,
+            col: 1,
+        }
+    }
+}
