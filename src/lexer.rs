@@ -156,7 +156,7 @@ impl<'a> Lexer<'a> {
                             // Continue processing if it's a digit
                             y if y.as_bytes()[0].is_ascii_digit() => {}
                             DECIMAL_POINT => {
-                                // If it already has a decimal point, then mark it as a symbol
+                                // On encounter with a second decimal point, then mark it as a symbol
                                 if has_decimal_point {
                                     has_num_check_failed = true;
                                     continue 'lexer_loop;
