@@ -4,6 +4,7 @@ const TAB: &str = "\t";
 const LINE_FEED: &str = "\n";
 const START: &str = "(";
 const END: &str = ")";
+const STRING_QUOTE: &str = "\"";
 
 pub enum Token {
     Start {
@@ -99,6 +100,29 @@ impl<'a> Lexer<'a> {
                     };
                     self.advance_column(1);
                     return Ok(token);
+                }
+                STRING_QUOTE => {
+                    for i in 1..self.input.len() {
+                        if &self.input[i..i + 1] == STRING_QUOTE {
+                            let token = Token::String {
+                                token: self.input[1..i].to_owned(),
+                                line: self.line,
+                                col: self.col,
+                            };
+                            self.advance_column(i + 1);
+                            return Ok(token);
+                        } else if &self.input[i..i + 1] == LINE_FEED {
+                            return Err(LexerError::UnclosedString {
+                                line: self.line,
+                                col: self.col,
+                            });
+                        }
+                    }
+                    self.advance_column(self.input.len());
+                    return Err(LexerError::UnclosedString {
+                        line: self.line,
+                        col: self.col,
+                    });
                 }
                 _ => {}
             }
