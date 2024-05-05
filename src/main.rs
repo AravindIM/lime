@@ -37,7 +37,6 @@ fn main() -> Result<()> {
                         Err(lime::lexer::LexerError::NoTokenFound) => break,
                     };
                 }
-                // println!("Output: {}", start);
             }
             Err(ReadlineError::Interrupted) => {
                 println!("Error: Keyboard Interrupt!");
