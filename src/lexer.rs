@@ -1,3 +1,4 @@
+const CARRIAGE_RETURN: &str = "\r";
 pub enum Token {
     Start {
         line: usize,
@@ -57,5 +58,19 @@ impl<'a> Lexer<'a> {
         self.col = 0;
         self.line += delta;
         self.skip(delta);
+    }
+
+    pub fn next(&mut self) -> Result<Token, LexerError> {
+        while self.input.len() > 0 {
+            match &self.input[0..1] {
+                CARRIAGE_RETURN => {
+                    while &self.input[0..1] == CARRIAGE_RETURN {
+                        self.skip(1);
+                    }
+                }
+                _ => {}
+            }
+        }
+        return Err(LexerError::NoTokenFound);
     }
 }
