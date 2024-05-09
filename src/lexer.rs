@@ -7,6 +7,7 @@ const END: &str = ")";
 const STRING_QUOTE: &str = "\"";
 const DECIMAL_POINT: &str = ".";
 
+#[derive(Debug)]
 pub enum Token {
     Start {
         line: usize,

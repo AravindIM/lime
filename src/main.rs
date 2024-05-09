@@ -1,4 +1,4 @@
-use lime::lexer::{Lexer, Token};
+use lime::lexer::Lexer;
 use rustyline::error::ReadlineError;
 use rustyline::{DefaultEditor, Result};
 
@@ -13,23 +13,7 @@ fn main() -> Result<()> {
                 let mut lexer = Lexer::new(&line);
                 loop {
                     match lexer.next() {
-                        Ok(token) => match token {
-                            Token::Start { line, col } => {
-                                println!("Start(line: {}, col: {})", line, col)
-                            }
-                            Token::End { line, col } => {
-                                println!("End(line: {}, col: {})", line, col)
-                            }
-                            Token::String { token, line, col } => {
-                                println!("String(\"{}\", line: {}, col: {})", token, line, col)
-                            }
-                            Token::Number { token, line, col } => {
-                                println!("Number({}, line: {}, col: {})", token, line, col)
-                            }
-                            Token::Symbol { token, line, col } => {
-                                println!("Symbol({}, line: {}, col: {})", token, line, col)
-                            }
-                        },
+                        Ok(token) => println!("{:?}", token),
                         Err(lime::lexer::LexerError::UnclosedString { line, col }) => {
                             println!("ERROR:{}:{}: Missing quote", line, col);
                             break;
