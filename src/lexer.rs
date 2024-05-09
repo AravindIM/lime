@@ -8,7 +8,7 @@ const STRING_QUOTE: &str = "\"";
 const DECIMAL_POINT: &str = ".";
 
 #[derive(Debug)]
-pub enum Token {
+pub enum Token<'a> {
     Start {
         line: usize,
         col: usize,
@@ -18,17 +18,17 @@ pub enum Token {
         col: usize,
     },
     Symbol {
-        token: String,
+        token: &'a str,
         line: usize,
         col: usize,
     },
     String {
-        token: String,
+        token: &'a str,
         line: usize,
         col: usize,
     },
     Number {
-        token: String,
+        token: &'a str,
         line: usize,
         col: usize,
     },
@@ -119,7 +119,7 @@ impl<'a> Lexer<'a> {
                         if &self.input[i..i + 1] == STRING_QUOTE && &self.input[i - 1..i] != "\\" {
                             // Save token before clearing it
                             let token = Token::String {
-                                token: self.input[1..i].to_owned(), // Skip the first quote character
+                                token: &self.input[1..i], // Skip the first quote character
                                 line: self.line,
                                 col: self.col,
                             };
@@ -178,7 +178,7 @@ impl<'a> Lexer<'a> {
 
                     // Save token before clearing it
                     let token = Token::Number {
-                        token: self.input[0..i].to_owned(),
+                        token: &self.input[0..i],
                         line: self.line,
                         col: self.col,
                     };
@@ -202,7 +202,7 @@ impl<'a> Lexer<'a> {
 
                     // Save token before clearing it
                     let token = Token::Symbol {
-                        token: self.input[0..i].to_owned(),
+                        token: &self.input[0..i],
                         line: self.line,
                         col: self.col,
                     };
