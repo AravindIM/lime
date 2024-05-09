@@ -20,3 +20,9 @@ pub enum AstNode<'a> {
         col: usize,
     },
 }
+
+pub enum ParserError {
+    UnclosedString { line: usize, col: usize },
+    UnclosedList { line: usize, col: usize },
+    NotAList { line: usize, col: usize },
+}
