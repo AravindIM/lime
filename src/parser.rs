@@ -1,3 +1,6 @@
+use core::fmt;
+use std::fmt::Formatter;
+
 use crate::lexer::{Lexer, LexerError};
 
 pub enum AstNode<'a> {
@@ -27,6 +30,26 @@ pub enum ParserError {
     UnclosedString { line: usize, col: usize },
     UnclosedList { line: usize, col: usize },
     ExtraneousClosingList { line: usize, col: usize },
+}
+
+impl fmt::Display for ParserError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::UnclosedString { line, col } => {
+                return write!(f, "ERROR:{}:{}: Missing closing for string!", line, col);
+            }
+            Self::UnclosedList { line, col } => {
+                return write!(f, "ERROR:{}:{}: Missing closing for list!", line, col);
+            }
+            Self::ExtraneousClosingList { line, col } => {
+                return write!(
+                    f,
+                    "ERROR:{}:{}: Extraneous closing for string found",
+                    line, col
+                );
+            }
+        }
+    }
 }
 
 pub fn parse<'a>(lexer: &'a mut Lexer) -> Result<Vec<AstNode<'a>>, ParserError> {
