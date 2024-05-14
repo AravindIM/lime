@@ -26,7 +26,7 @@ pub enum AstNode<'a> {
 pub enum ParserError {
     UnclosedString { line: usize, col: usize },
     UnclosedList { line: usize, col: usize },
-    NotAList { line: usize, col: usize },
+    ExtraneousClosingList { line: usize, col: usize },
 }
 
 pub fn parse<'a>(lexer: &'a mut Lexer) -> Result<Vec<AstNode<'a>>, ParserError> {
