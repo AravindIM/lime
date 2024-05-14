@@ -59,7 +59,7 @@ pub fn parse<'a>(lexer: &'a mut Lexer) -> Result<Vec<AstNode<'a>>, ParserError> 
             Ok(token) => {}
             Err(error) => match error {
                 LexerError::UnclosedString { line, col } => {
-                    return Err(ParserError::UnclosedList { line, col });
+                    return Err(ParserError::UnclosedString { line, col });
                 }
                 LexerError::NoTokenFound => break,
             },
