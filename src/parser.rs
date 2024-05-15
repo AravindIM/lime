@@ -44,7 +44,7 @@ impl fmt::Display for ParserError {
             Self::ExtraneousClosingList { line, col } => {
                 return write!(
                     f,
-                    "ERROR:{}:{}: Extraneous closing for string found",
+                    "ERROR:{}:{}: Extraneous closing for list found",
                     line, col
                 );
             }
