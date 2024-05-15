@@ -1,7 +1,7 @@
 use core::fmt;
 use std::fmt::Formatter;
 
-use crate::lexer::{Lexer, LexerError};
+use crate::lexer::{Lexer, LexerError, Token};
 
 pub enum AstNode<'a> {
     List {
@@ -54,14 +54,51 @@ impl fmt::Display for ParserError {
 
 pub fn parse<'a>(lexer: &'a mut Lexer) -> Result<Vec<AstNode<'a>>, ParserError> {
     let mut program: Vec<AstNode> = vec![];
+    let mut list_stack: Vec<AstNode> = vec![];
     loop {
         match lexer.next() {
-            Ok(token) => {}
+            Ok(token) => match token {
+                Token::Start { line, col } => {
+                    let new_list = AstNode::List {
+                        elements: vec![],
+                        line,
+                        col,
+                    };
+                    list_stack.push(new_list);
+                }
+                Token::End { line, col } => match list_stack.pop() {
+                    Some(current_list) => match list_stack.last_mut() {
+                        Some(previous_list) => {
+                            if let AstNode::List {
+                                ref mut elements, ..
+                            } = *previous_list
+                            {
+                                elements.push(Box::new(current_list));
+                            }
+                        }
+                        None => {
+                            program.push(current_list);
+                        }
+                    },
+                    None => return Err(ParserError::ExtraneousClosingList { line, col }),
+                },
+                _ => {}
+            },
             Err(error) => match error {
                 LexerError::UnclosedString { line, col } => {
                     return Err(ParserError::UnclosedString { line, col });
                 }
-                LexerError::NoTokenFound => break,
+                LexerError::NoTokenFound => {
+                    if list_stack.is_empty() {
+                        break;
+                    } else {
+                        dbg!(list_stack.len());
+                        return Err(ParserError::UnclosedList {
+                            line: lexer.line,
+                            col: lexer.col,
+                        });
+                    }
+                }
             },
         }
     }
