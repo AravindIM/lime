@@ -1,4 +1,5 @@
 use lime::lexer::Lexer;
+use lime::parser::parse;
 use rustyline::error::ReadlineError;
 use rustyline::{DefaultEditor, Result};
 
@@ -11,16 +12,19 @@ fn main() -> Result<()> {
             Ok(line) => {
                 rl.add_history_entry(line.as_str())?;
                 let mut lexer = Lexer::new(&line);
-                loop {
-                    match lexer.next() {
-                        Ok(token) => println!("{:?}", token),
-                        Err(lime::lexer::LexerError::UnclosedString { line, col }) => {
-                            println!("ERROR:{}:{}: Missing quote", line, col);
-                            break;
-                        }
-                        Err(lime::lexer::LexerError::NoTokenFound) => break,
-                    };
+                match parse(&mut lexer) {
+                    Ok(_) => println!("Parsed successfully!"),
+                    Err(e) => println!("{}", e),
                 }
+                // loop {
+                //     match lexer.next() {
+                //         Ok(token) => println!("{:?}", token),
+                //         Err(e) => {
+                //             println!("{}", e);
+                //             break;
+                //         }
+                //     };
+                // }
             }
             Err(ReadlineError::Interrupted) => {
                 println!("Error: Keyboard Interrupt!");
