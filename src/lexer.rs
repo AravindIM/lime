@@ -41,8 +41,8 @@ pub enum LexerError {
 
 pub struct Lexer<'a> {
     input: &'a str,
-    line: usize,
-    col: usize,
+    pub line: usize,
+    pub col: usize,
 }
 
 impl<'a> Lexer<'a> {
