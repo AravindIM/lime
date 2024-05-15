@@ -103,7 +103,7 @@ impl<'a> Lexer<'a> {
                 }
                 END => {
                     // Save token before clearing it
-                    let token = Token::Start {
+                    let token = Token::End {
                         line: self.line,
                         col: self.col,
                     };
