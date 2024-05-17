@@ -82,6 +82,24 @@ pub fn parse<'a>(lexer: &'a mut Lexer) -> Result<Vec<AstNode<'a>>, ParserError> 
                     },
                     None => return Err(ParserError::ExtraneousClosingList { line, col }),
                 },
+                Token::Number { token, line, col } => {
+                    let node = AstNode::Number {
+                        value: token,
+                        line,
+                        col,
+                    };
+                    match list_stack.last_mut() {
+                        Some(previous_list) => {
+                            if let AstNode::List {
+                                ref mut elements, ..
+                            } = *previous_list
+                            {
+                                elements.push(Box::new(node));
+                            }
+                        }
+                        None => program.push(node),
+                    }
+                }
                 _ => {}
             },
             Err(error) => match error {
