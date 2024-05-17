@@ -13,7 +13,9 @@ fn main() -> Result<()> {
                 rl.add_history_entry(line.as_str())?;
                 let mut lexer = Lexer::new(&line);
                 match parse(&mut lexer) {
-                    Ok(_) => println!("Parsed successfully!"),
+                    Ok(ast) => {
+                        dbg!(ast);
+                    }
                     Err(e) => println!("{}", e),
                 }
                 // loop {

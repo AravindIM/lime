@@ -3,6 +3,7 @@ use std::fmt::Formatter;
 
 use crate::lexer::{Lexer, LexerError, Token};
 
+#[derive(Debug)]
 pub enum AstNode<'a> {
     List {
         elements: Vec<Box<AstNode<'a>>>,
