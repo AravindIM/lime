@@ -69,7 +69,7 @@ impl<'a> Lexer<'a> {
         self.skip(delta);
     }
 
-    pub fn next(&mut self) -> Result<Token, LexerError> {
+    pub fn next(&mut self) -> Result<Token<'a>, LexerError> {
         let mut has_num_check_failed: bool = false;
 
         'lexer_loop: while self.input.len() > 0 {
