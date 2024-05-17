@@ -118,7 +118,24 @@ pub fn parse<'a>(lexer: &'a mut Lexer) -> Result<Vec<AstNode<'a>>, ParserError> 
                         None => program.push(node),
                     }
                 }
-                _ => {}
+                Token::Symbol { token, line, col } => {
+                    let node = AstNode::Symbol {
+                        value: token,
+                        line,
+                        col,
+                    };
+                    match list_stack.last_mut() {
+                        Some(previous_list) => {
+                            if let AstNode::List {
+                                ref mut elements, ..
+                            } = *previous_list
+                            {
+                                elements.push(Box::new(node));
+                            }
+                        }
+                        None => program.push(node),
+                    }
+                }
             },
             Err(error) => match error {
                 LexerError::UnclosedString { line, col } => {
