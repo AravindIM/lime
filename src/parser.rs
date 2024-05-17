@@ -92,7 +92,6 @@ pub fn parse<'a>(lexer: &'a mut Lexer) -> Result<Vec<AstNode<'a>>, ParserError> 
                     if list_stack.is_empty() {
                         break;
                     } else {
-                        dbg!(list_stack.len());
                         return Err(ParserError::UnclosedList {
                             line: lexer.line,
                             col: lexer.col,
