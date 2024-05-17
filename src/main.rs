@@ -29,7 +29,7 @@ fn main() -> Result<()> {
                 // }
             }
             Err(ReadlineError::Interrupted) => {
-                println!("Error: Keyboard Interrupt!");
+                println!("ERROR: Keyboard Interrupt!");
                 break;
             }
             Err(ReadlineError::Eof) => {
@@ -37,7 +37,7 @@ fn main() -> Result<()> {
                 break;
             }
             Err(err) => {
-                println!("Error: {:?}", err);
+                println!("ERROR: {:?}", err);
                 break;
             }
         }
